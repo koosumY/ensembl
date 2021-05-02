@@ -56,6 +56,12 @@ class ItemModel(db.Model):
         # all() when used to return ORM instances will de-duplicate
         # based on primary key identity as those instances come in
         if res:
-            return {'items': list(map(lambda x: x.json(), res.limit(pagesize).all()))}
+            hitcount = res.count()
+            return [{'request': [{'hitCount': hitcount,
+                                  'version': 1.1,
+                                  'pageSize': pagesize}
+
+                                 ],
+                     'resultList': list(map(lambda x: x.json(), res.limit(pagesize).all()))}]
 
         return {'message': "Gene '{}' not found.".format(genesymbol)}
